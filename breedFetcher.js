@@ -1,24 +1,32 @@
 const request = require('request');
 
-let input = process.argv.slice(2);
-let domainName = input.toString();
 
-if (domainName === "chartreux") {
-  domainName = "https://api.thecatapi.com/v1/breeds/search?q=chartreux";
+const fetchBreedDescription = function(breedName, callback) {
+  if (breedName === "chartreux") {
+    breedName = "https://api.thecatapi.com/v1/breeds/search?q=chartreux";
+  
+  
+    request(breedName, (error, response, body) => {
+      if (error) {
+        callback(error, null)
+      }
+      let desc = JSON.parse(body)[0].description;
+      
+      
+      callback(null, desc);
+    });
+  } else {
+    request(breedName, (error, response, body) => {
+      if (error) {
+        
+        callback(error, null)
+      }
+      let desc = JSON.parse(body)[0].description;
+      
+      callback(null, desc);
+    });
+  } 
+   
+};
 
-
-  request(domainName, (error, response, body) => {
-    console.log('error:', error);
-    console.log('statuscode:', response && response.statusCode);
-    console.log('body:', body);
-    const data = JSON.parse(body);
-    console.log(data);
-  });
-} else request(domainName, (error, response, body) => {
-  console.log('error:', error);
-  console.log('statuscode:', response && response.statusCode);
-  console.log('body:', body);
-  const data = JSON.parse(body);
-  console.log(data);
-});
- 
+module.exports = fetchBreedDescription;
